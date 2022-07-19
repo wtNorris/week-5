@@ -1,27 +1,49 @@
+// PARAMETER current day displayed at top of calendar plus variables
 var currentDay = dayjs().format('dddd, MMMM D');
 $("#currentDay").text(currentDay);
+var saveBtn = $("#saveBtn");
 
-// if currentTime == current time then append .present id to description
-var currentTime = dayjs().format('H');
-console.log(currentTime);
-var hours = [nine = '9AM', 
-            ten ='10AM',
-            eleven = '11AM',
-            twelve = '12PM',
-            thirteen ='1PM',
-            fourteen = '2PM',
-            fifthteen = '3PM',
-            sixteen = '4PM',
-            seventeen = '5PM'] = ['9', '10', '11', '12', '13', '14', '15', '16', '17'];
-//$("#hour").text(hours); changes times to array of times
-console.log(hours);
 
-// need to figure out how to write a function that appends the div id = past/present/future
-//if (hours[''] == currentTime) {
- //   $("#description").append("present");
-//} else if (hours < currentTime) {
-//    $("description").append("past")
-//} else if (hours > currentTime) {
-//    $("description").append("future");
-//}
+// PARAMTER time blocks bg color based on relative hour
+function backColor() {
+    var tbhour = moment().hours();
 
+    $(".timeBlock").each(function() {
+        var hourNow = parseInt($(this).attr("id"));
+
+        if (hourNow > tbhour) {
+            $(this).addClass("future");
+        } else if (hourNow === tbhour) {
+            $(this).addClass("present");
+        } else {
+            $(this).addClass("past");
+        }
+    })
+};
+
+// PARAMETER save button click attaches text&val siblings to 
+saveBtn.on("click", function() {
+
+    // console.log(this); //save button
+    var time = $(this).siblings(".hour").text();
+    var scheduled = $(this).siblings(".scheduled").val();
+
+    // THEN the text for that event is saved in local storage
+    localStorage.setItem(time, scheduled);
+});
+
+// PARAMETER I refresh the page then the saved events persist
+function usesSched() {
+
+    $(".hour").each(function() {
+        var currHour = $(this).text();
+        var currSched = localStorage.getItem(currHour);
+
+        if(currSched !== null) {
+            $(this).siblings(".schedule").val(currSched);
+        }
+    });
+}
+
+backColor();
+useSched();
